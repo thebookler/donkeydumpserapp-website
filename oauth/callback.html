@@ -4,42 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OAuth Callback</title>
-    <script>
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            const code = params.get("code");
-            const state = params.get("state");
-
-            if (code) {
-                console.log("✅ Authorization Code Received:", code);
-
-                // Send the code to your backend
-                fetch("https://donkeydumpster.app/api/exchange-token", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ code: code, state: state })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("✅ Token Exchange Response:", data);
-                    
-                    // Notify the app
-                    window.location.href = "yourapp://oauth-callback?success=true";
-                })
-                .catch(error => {
-                    console.error("❌ Error exchanging token:", error);
-                    window.location.href = "yourapp://oauth-callback?success=false";
-                });
-            } else {
-                console.error("❌ No authorization code found.");
-                window.location.href = "yourapp://oauth-callback?success=false";
-            }
-        };
-    </script>
 </head>
 <body>
-    <h2>Processing OAuth...</h2>
+    <h2>OAuth Callback</h2>
+    <p>Processing authorization...</p>
+    
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get("code");
+        const state = urlParams.get("state");
+        const error = urlParams.get("error");
+
+        // Display the response on the page
+        if (authCode) {
+            document.body.innerHTML += `<p><strong>Authorization Code:</strong> ${authCode}</p>`;
+        } 
+        if (state) {
+            document.body.innerHTML += `<p><strong>State:</strong> ${state}</p>`;
+        }
+        if (error) {
+            document.body.innerHTML += `<p style="color:red;"><strong>Error:</strong> ${error}</p>`;
+        }
+
+        console.log("OAuth Callback Response:", { authCode, state, error });
+    </script>
 </body>
 </html>
