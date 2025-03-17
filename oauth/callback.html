@@ -18,12 +18,19 @@
 
         // Display the response on the page
         if (authCode) {
+            document.body.innerHTML = `<h2>Authorization Successful</h2>`;
             document.body.innerHTML += `<p><strong>Authorization Code:</strong> ${authCode}</p>`;
+
+            // Send the authorization code back to the Swift app
+            window.webkit.messageHandlers.oauthCallback.postMessage(authCode);
+
+            // Close the Safari View after a short delay
+            setTimeout(() => {
+                window.close();
+            }, 1500);
         } 
-        if (state) {
-            document.body.innerHTML += `<p><strong>State:</strong> ${state}</p>`;
-        }
-        if (error) {
+        else if (error) {
+            document.body.innerHTML = `<h2>Authorization Failed</h2>`;
             document.body.innerHTML += `<p style="color:red;"><strong>Error:</strong> ${error}</p>`;
         }
 
